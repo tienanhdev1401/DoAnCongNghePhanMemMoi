@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import api from '../../api/api';
 import USER_ROLE from '../../enums/userRole.enum';
 import { jwtDecode } from 'jwt-decode';
@@ -64,10 +65,15 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [showOtpModal, setShowOtpModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState('');
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpCountdown, setOtpCountdown] = useState(60);
 
   const navigate = useNavigate();
 
@@ -76,8 +82,8 @@ const LoginPage = () => {
     try {
       const res = await api.post('/auth/login', { email, password });
       localStorage.setItem('accessToken', res.data.accessToken);
-      const decoded = jwtDecode(res.data.accessToken);
-      const role = decoded.role;
+  const decoded = jwtDecode(res.data.accessToken);
+  const { role } = decoded;
 
       if (role === USER_ROLE.ADMIN || role === USER_ROLE.STAFF) {
         navigate('/dashboard');
@@ -94,8 +100,8 @@ const LoginPage = () => {
     const tokenFromGoogle = params.get('accessToken');
     if (tokenFromGoogle) {
       localStorage.setItem('accessToken', tokenFromGoogle);
-      const decoded = jwtDecode(tokenFromGoogle);
-      const role = decoded.role;
+  const decoded = jwtDecode(tokenFromGoogle);
+  const { role } = decoded;
 
       if (role === USER_ROLE.ADMIN || role === USER_ROLE.STAFF) {
         navigate('/dashboard');
@@ -113,15 +119,15 @@ const LoginPage = () => {
       return;
     }
     try {
-      await api.post('/auth/register', {
-        name: fullName,
-        email,
-        password,
-      });
-      alert('Đăng ký thành công! Hãy đăng nhập.');
-      setIsSignIn(true);
+      setIsSendingOtp(true);
+      await api.post('/auth/send-verification-code', { email });
+      setShowOtpModal(true);
+      setOtp(Array(6).fill(''));
+      setOtpCountdown(60);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
@@ -134,6 +140,11 @@ const LoginPage = () => {
     setShowConfirmPassword(false);
     setAgreeTerms(false);
     setError('');
+    setOtp(Array(6).fill(''));
+    setShowOtpModal(false);
+    setIsSendingOtp(false);
+    setIsVerifyingOtp(false);
+    setOtpCountdown(60);
   };
 
   const showSignIn = () => {
@@ -147,6 +158,61 @@ const LoginPage = () => {
   };
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
+  const handleChangeOtp = (value, index) => {
+    if (/^\d*$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+      if (value && index < 5) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        nextInput?.focus();
+      }
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const code = otp.join('');
+    if (code.length !== 6) {
+      alert('Vui lòng nhập đủ 6 chữ số OTP!');
+      return;
+    }
+
+    try {
+      setIsVerifyingOtp(true);
+      await api.post('/auth/register', {
+        name: fullName,
+        email,
+        password,
+        otp: code,
+      });
+      alert('Đăng ký thành công! Hãy đăng nhập.');
+      setShowOtpModal(false);
+      setIsSignIn(true);
+      clearForm();
+    } catch (err) {
+      alert(err.response?.data?.message || 'OTP không hợp lệ hoặc đã hết hạn.');
+    } finally {
+      setIsVerifyingOtp(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!showOtpModal) return;
+
+    setOtpCountdown(60);
+    const timer = setInterval(() => {
+      setOtpCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [showOtpModal]);
 
   return (
     <div className={styles.page}>
@@ -185,7 +251,7 @@ const LoginPage = () => {
             </button>
             <button
               type="button"
-              className={`${styles.tabButton} ${!isSignIn ? styles.activeTab : ''}`}
+              className={`${styles.tabButton} ${isSignIn ? '' : styles.activeTab}`}
               onClick={showSignUp}
             >
               Đăng Ký
@@ -253,7 +319,14 @@ const LoginPage = () => {
                   </span>
                 </label>
 
-                <button type="submit" className={styles.primaryButton}>
+                <button type="submit" className={styles.primaryButton} disabled={isSendingOtp}>
+                  {isSendingOtp && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  )}
                   Đăng Ký
                 </button>
               </form>
@@ -314,6 +387,55 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+
+      <Modal show={showOtpModal} onHide={() => setShowOtpModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Nhập mã OTP</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Nhập 6 chữ số OTP đã được gửi tới email: <b>{email}</b>
+          </p>
+          <p>
+            Thời gian còn lại: <b>{otpCountdown}s</b>
+          </p>
+          <div className="d-flex justify-content-center gap-2">
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                id={`otp-${index}`}
+                type="text"
+                inputMode="numeric"
+                maxLength="1"
+                value={digit}
+                onChange={(e) => handleChangeOtp(e.target.value, index)}
+                className="form-control text-center"
+                style={{ width: '45px', height: '45px', fontSize: '20px', borderRadius: '10px' }}
+                disabled={otpCountdown === 0}
+              />
+            ))}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowOtpModal(false)}>
+            Hủy
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleVerifyOtp}
+            disabled={isVerifyingOtp || otpCountdown === 0}
+          >
+            {isVerifyingOtp && (
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            )}
+            Xác nhận
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

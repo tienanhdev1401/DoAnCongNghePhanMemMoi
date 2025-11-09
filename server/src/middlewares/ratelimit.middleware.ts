@@ -17,13 +17,12 @@ const loginLimiter = rateLimit({
   message: "Bạn đã thử đăng nhập quá nhiều lần, hãy thử lại sau 30 giây",
 });
 
-// Rate limit riêng cho /send-otp
 const otpLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 phút
-  max: 3, // Mỗi IP chỉ gửi tối đa 3 OTP / phút
+  max: 3,
   message: "Bạn đã gửi quá nhiều mã OTP, vui lòng thử lại sau 1 phút",
-  standardHeaders: true, // Gửi thông tin rate limit trong header
-  legacyHeaders: false,  // Tắt header cũ
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 

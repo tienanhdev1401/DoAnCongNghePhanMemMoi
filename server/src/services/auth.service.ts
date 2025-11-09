@@ -1,9 +1,12 @@
 import jwt from "jsonwebtoken";
-import { userRepository } from "../repostories/user.repository";
+import { userRepository } from "../repositories/user.repository";
+import USER_ROLE from "../enums/userRole.enum";
+import AUTH_PROVIDER from "../enums/authProvider.enum";
 import { HttpStatusCode } from "axios";
 import ApiError from "../utils/ApiError";
 import dotenv from "dotenv";
 import { User } from "../models/user";
+import OtpService from "./otp.service";
 dotenv.config();
 
 const ACCESS_SECRET = process.env.ACCESS_SECRET as string;
@@ -43,7 +46,26 @@ class AuthService {
     );
   }
 
-  
+  // Register
+  static async register(name: string, email: string, password: string, otp: string): Promise<User> {
+    // Verify OTP
+    await OtpService.verifyOtp(email, otp);
+
+    const existingUser = await userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      throw new ApiError(HttpStatusCode.BadRequest, "Email đã tồn tại");
+    }
+
+    const newUser = userRepository.create({
+      name,
+      email,
+      password,
+      role: USER_ROLE.USER,
+      authProvider: AUTH_PROVIDER.LOCAL,
+    });
+
+    return await userRepository.save(newUser);
+  }
 
   // Refresh access token
   static async refreshAccessToken(refreshToken: string): Promise<string> {
@@ -77,6 +99,18 @@ class AuthService {
     return jwt.verify(accessToken, ACCESS_SECRET);
   }
 
+  // Lấy user theo id
+  static async getUserById(id: number): Promise<User> {
+    const user = await userRepository.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new ApiError(HttpStatusCode.NotFound, "Không tìm thấy người dùng");
+    }
+
+    return user;
+  }
 }
 
 export default AuthService;

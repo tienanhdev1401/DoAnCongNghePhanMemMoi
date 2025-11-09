@@ -6,6 +6,8 @@ import { AuthProvider } from './context/AuthContext';
 import { HighlightProvider } from './context/HighlightContext';
 import { ThemeProvider } from './context/ThemeContext';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 // Global CSS Reset
 import './index.css';
 
