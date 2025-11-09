@@ -10,6 +10,11 @@ dotenv.config(); // load env
 
 // Configs & routes
 import { AppDataSource } from "./config/database";
+import "./config/passport"; // register authentication strategies
+import authRouter from "./routes/auth.routes";
+import oauthRoutes from "./routes/oauth.routes";
+import userRouter from "./routes/user.routes";
+import errorHandlingMiddleware from "./middlewares/errorHandling.middleware";
 
 
 const app = express();
@@ -25,6 +30,14 @@ app.use(cors({
 }));
 
 const server = http.createServer(app);
+
+// Mount REST API routes
+app.use('/api/auth', authRouter);
+app.use('/api/auth', oauthRoutes);
+app.use('/api/users', userRouter);
+
+// Global error handler keeps consistent JSON responses
+app.use(errorHandlingMiddleware);
 
 
 
