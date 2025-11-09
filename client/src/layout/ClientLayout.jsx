@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
+import Header from "../client/components/Header";
+import Footer from "../client/components/Footer";
 import styles from "../client/styles/ClientLayout.module.css";
 
 import { HighlightContext } from "../context/HighlightContext";
-import TranslatePopup from "../component/TranslatePopup";
+import TranslatePopup from "../components/TranslatePopup";
 
 const ClientLayout = ({ children }) => {
 
