@@ -5,6 +5,12 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import cors from 'cors'
 import http from "http";
+import { swaggerUi, swaggerSpec } from "./config/swagger";
+import errorHandlingMiddleware from './middlewares/errorHandling.middleware'
+import { limiter } from './middlewares/ratelimit.middleware'
+import authRouter from './routes/auth.routes'
+
+
 
 dotenv.config(); // load env
 
@@ -26,8 +32,13 @@ app.use(cors({
 
 const server = http.createServer(app);
 
+app.use('/api/auth', authRouter);
 
 
+// swagger endpoint
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use(errorHandlingMiddleware);
 // Kết nối và sync TypeORM
 const PORT = 5000;
 AppDataSource.initialize().then(() => {

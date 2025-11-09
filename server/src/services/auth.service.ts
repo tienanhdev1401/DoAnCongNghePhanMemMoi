@@ -1,0 +1,82 @@
+import jwt from "jsonwebtoken";
+import { userRepository } from "../repostories/user.repository";
+import { HttpStatusCode } from "axios";
+import ApiError from "../utils/ApiError";
+import dotenv from "dotenv";
+import { User } from "../models/user";
+dotenv.config();
+
+const ACCESS_SECRET = process.env.ACCESS_SECRET as string;
+const REFRESH_SECRET = process.env.REFRESH_SECRET as string;
+
+class AuthService {
+  // Login
+  static async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
+    const user = await userRepository.findOne({ where: { email } });
+
+    if (!user || user.password !== password) {
+      // Nếu dùng bcrypt, thay dòng trên bằng bcrypt.compare
+      throw new ApiError(HttpStatusCode.Unauthorized, "Sai tài khoản hoặc mật khẩu");
+    }
+
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+
+    return { accessToken, refreshToken };
+  }
+
+  // Tạo Access Token
+  static generateAccessToken(user: User): string {
+    return jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      ACCESS_SECRET,
+      { expiresIn: "3h" }
+    );
+  }
+
+  // Tạo Refresh Token
+  static generateRefreshToken(user: User): string {
+    return jwt.sign(
+      { id: user.id, role: user.role },
+      REFRESH_SECRET,
+      { expiresIn: "1d" }
+    );
+  }
+
+  
+
+  // Refresh access token
+  static async refreshAccessToken(refreshToken: string): Promise<string> {
+    try {
+      const payload = this.verifyRefreshToken(refreshToken) as any;
+      const user = await userRepository.findOne({ where: { id: payload.id } });
+
+      if (!user) {
+        throw new ApiError(HttpStatusCode.Unauthorized, "User không tồn tại");
+      }
+
+      return this.generateAccessToken(user);
+    } catch (error: any) {
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new ApiError(HttpStatusCode.Unauthorized, "Refresh token đã hết hạn");
+      }
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new ApiError(HttpStatusCode.Unauthorized, "Refresh token không hợp lệ");
+      }
+      throw error;
+    }
+  }
+
+  // Verify refresh token
+  static verifyRefreshToken(refreshToken: string): string | object {
+    return jwt.verify(refreshToken, REFRESH_SECRET);
+  }
+
+  // Verify access token
+  static verifyAccessToken(accessToken: string): string | object {
+    return jwt.verify(accessToken, ACCESS_SECRET);
+  }
+
+}
+
+export default AuthService;
