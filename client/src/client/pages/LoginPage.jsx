@@ -5,6 +5,7 @@ import api from '../../api/api';
 import USER_ROLE from '../../enums/userRole.enum';
 import { jwtDecode } from 'jwt-decode';
 import styles from '../styles/LoginPage.module.css';
+import { showErrorAlert } from '../../component/AlertErrorModel';
 
 const EYE_OPEN_ICON = '/assets/img/icon/eye-close-up-svgrepo-com.svg';
 const EYE_CLOSED_ICON = '/assets/img/icon/eye-close-svgrepo-com.svg';
@@ -82,16 +83,16 @@ const LoginPage = () => {
     try {
       const res = await api.post('/auth/login', { email, password });
       localStorage.setItem('accessToken', res.data.accessToken);
-  const decoded = jwtDecode(res.data.accessToken);
-  const { role } = decoded;
+      const decoded = jwtDecode(res.data.accessToken);
+      const { role } = decoded;
 
       if (role === USER_ROLE.ADMIN || role === USER_ROLE.STAFF) {
         navigate('/dashboard');
       } else {
         navigate('/');
       }
-    } catch {
-      alert('Login failed');
+    } catch (err){
+      showErrorAlert(err);
     }
   };
 
