@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import LoginPage from "./client/pages/LoginPage";
 import HomePage from "./client/pages/HomePage";
+import ForgetPasswordPage from "./client/pages/ForgetPasswordPage";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import ClientLayout from "./layout/ClientLayout";
 
@@ -19,6 +20,7 @@ function App() {
         }
       />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forget-password" element={<ForgetPasswordPage />} />
     </Routes>
   );
 }

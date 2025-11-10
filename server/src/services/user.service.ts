@@ -97,7 +97,10 @@ class UserService {
     if (!user) {
       throw new ApiError(HttpStatusCode.NotFound, "Không tìm thấy người dùng");
     }
-    user.password = newPassword;
+    // Hash mật khẩu trước khi lưu
+    const hashedPassword = await hashPassword(newPassword);
+    user.password = hashedPassword;
+    
     await userRepository.save(user);
   }
 }
