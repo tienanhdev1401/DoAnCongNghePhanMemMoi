@@ -20,7 +20,7 @@ function App() {
       />
 
       <Route path="/login" element={<LoginPage />} />
-  <Route path="/forgot-password" element={<ForgetPasswordPage />} />
+  <Route path="/forget-password" element={<ForgetPasswordPage />} />
       <Route
         path="/profile"
         element={

@@ -121,7 +121,7 @@ const ForgetPassword = () => {
         </div>
 
         <div className={styles.rightPane}>
-          <h2 className="text-center mb-4">Đặt lại mật khẩu</h2>
+          <h2 className="text-center mb-4" style={{ color: "black" }}>Đặt lại mật khẩu</h2>
           <form className={styles.form} onSubmit={handleSendOtp}>
             <label className={styles.fieldLabel} htmlFor="email">
               Email
