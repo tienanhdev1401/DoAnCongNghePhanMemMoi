@@ -5,7 +5,7 @@ import api from '../../api/api';
 import USER_ROLE from '../../enums/userRole.enum';
 import { jwtDecode } from 'jwt-decode';
 import styles from '../styles/LoginPage.module.css';
-import { showErrorAlert } from '../../component/AlertErrorModel';
+import { showErrorAlert } from '../../components/AlertErrorModel';
 
 const EYE_OPEN_ICON = '/assets/img/icon/eye-close-up-svgrepo-com.svg';
 const EYE_CLOSED_ICON = '/assets/img/icon/eye-close-svgrepo-com.svg';

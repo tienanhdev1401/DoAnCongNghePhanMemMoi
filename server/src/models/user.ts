@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne,CreateDateColumn, UpdateDateColumn  } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import USER_ROLE from "../enums/userRole.enum";
 import AUTH_PROVIDER from "../enums/authProvider.enum";
+import USER_GENDER from "../enums/userGender.enum";
+import USER_STATUS from "../enums/userStatus.enum";
 
 @Entity({ name: "users" })
 export class User {
@@ -15,6 +17,29 @@ export class User {
 
   @Column({ type: "varchar", nullable: true })
   password!: string | null;
+
+  @Column({ type: "varchar", nullable: true })
+  avatarUrl!: string | null;
+
+  @Column({ type: "varchar", length: 20, nullable: true })
+  phone!: string | null;
+
+  @Column({ type: "date", nullable: true })
+  birthday!: Date | null;
+
+  @Column({
+    type: "enum",
+    enum: USER_GENDER,
+    nullable: true,
+  })
+  gender!: USER_GENDER | null;
+
+  @Column({
+    type: "enum",
+    enum: USER_STATUS,
+    default: USER_STATUS.UNVERIFIED,
+  })
+  status!: USER_STATUS;
 
   @Column({
     type: "enum",
@@ -38,9 +63,6 @@ export class User {
       );
     }
   };
-
-  
-
   @CreateDateColumn()
   startedAt!: Date;
   
