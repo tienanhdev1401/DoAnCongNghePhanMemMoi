@@ -59,7 +59,9 @@ const DictationShadowingPopUpModal = ({ lesson, onClose }) => {
               alt="Dictation"
               style={{ width: "145px", height: "145px" }}
             />
-            <div className="mt-2 fw-semibold">Nghe – Viết chính tả</div>
+            <div className="mt-2 fw-semibold" style={{ color: "#000" }}>
+              Nghe – Viết chính tả
+            </div>
           </div>
 
           {/* MODE: SHADOWING */}
@@ -73,7 +75,9 @@ const DictationShadowingPopUpModal = ({ lesson, onClose }) => {
               alt="Shadowing"
               style={{ width: "145px", height: "145px" }}
             />
-            <div className="mt-2 fw-semibold">Bắt chước phát âm</div>
+            <div className="mt-2 fw-semibold" style={{ color: "#000" }}>
+              Bắt chước – Phát âm
+            </div>
           </div>
         </div>
       </div>

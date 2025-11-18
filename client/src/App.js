@@ -7,6 +7,9 @@ import ForgetPasswordPage from "./client/pages/ForgetPasswordPage";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import ProfilePage from "./client/pages/ProfilePage";
 
+import LessonTopicPage from "./client/pages/LessonTopicPage";
+import TopicDetailPage from "./client/pages/LessonTopicDetailPage";
+
 function App() {
   return (
     <Routes>
@@ -28,6 +31,23 @@ function App() {
             <ClientLayout><ProfilePage /></ClientLayout>
           </ProtectedRoute>
           }
+      />
+
+      <Route
+        path="/topics"
+        element={
+          <ProtectedRoute>
+            <ClientLayout><LessonTopicPage /></ClientLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/topics/:topic"
+        element={
+          <ProtectedRoute>
+            <ClientLayout><TopicDetailPage/></ClientLayout>
+          </ProtectedRoute>
+        }
       />
 
       </Routes>
