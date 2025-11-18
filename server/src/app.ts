@@ -14,6 +14,7 @@ import { AppDataSource } from "./config/database";
 import userRouter from './routes/user.routes'
 import authRouter from './routes/auth.routes'
 import oauthRoutes from './routes/oauth.routes'
+import lessonRouter from './routes/lesson.routes'
 import './config/passport.js'   // chạy file config để đăng ký strategy
 import errorHandlingMiddleware from './middlewares/errorHandling.middleware'
 import { limiter } from './middlewares/ratelimit.middleware'
@@ -41,6 +42,7 @@ app.use('/api/auth', authRouter);
 app.use("/api/auth", oauthRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/uploads', uploadRouter);
+app.use('/api/lessons',lessonRouter);
 
 
 
