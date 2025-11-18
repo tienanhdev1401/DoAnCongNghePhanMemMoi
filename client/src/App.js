@@ -6,9 +6,10 @@ import ClientLayout from "./layout/ClientLayout";
 import ForgetPasswordPage from "./client/pages/ForgetPasswordPage";
 import ProtectedRoute from "./routers/ProtectedRoute";
 import ProfilePage from "./client/pages/ProfilePage";
-
 import LessonTopicPage from "./client/pages/LessonTopicPage";
 import TopicDetailPage from "./client/pages/LessonTopicDetailPage";
+import VideoPraticePage from "./client/pages/VideoPraticePage";
+import SpeakingVideoPraticePage from "./client/pages/SpeakingVideoPraticePage";
 
 function App() {
   return (
@@ -24,13 +25,32 @@ function App() {
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forget-password" element={<ForgetPasswordPage />} />
+
       <Route
-          path="/profile"
-          element={
+        path="/video/:lessonId"
+        element={
+          <ProtectedRoute>
+            <ClientLayout><VideoPraticePage /></ClientLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/speak/:lessonId"
+        element={
+          <ProtectedRoute>
+            <ClientLayout><SpeakingVideoPraticePage /></ClientLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
           <ProtectedRoute>
             <ClientLayout><ProfilePage /></ClientLayout>
           </ProtectedRoute>
-          }
+        }
       />
 
       <Route
@@ -49,8 +69,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-
-      </Routes>
+    </Routes>
   );
 }
 
