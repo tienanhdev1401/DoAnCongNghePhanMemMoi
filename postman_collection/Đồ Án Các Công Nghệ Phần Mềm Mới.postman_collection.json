@@ -270,6 +270,159 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Video Lesson",
+			"item": [
+				{
+					"name": "Get Lesson By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/lessons/18",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"18"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Lesson",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/lessons/18",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"18"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Lesson",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/lesson",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"lesson"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lesson",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Princess Mononoke Scene 2",
+									"type": "text"
+								},
+								{
+									"key": "video_url",
+									"value": "https://www.youtube.com/embed/vf6c6n35wr4?si=C87wihFh8Gk29MvZ",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail_url",
+									"value": "https://example.com/images/mononoke-thumb.jpg",
+									"type": "text"
+								},
+								{
+									"key": "srt_file",
+									"type": "file",
+									"src": "/C:/Users/ADMIN/Downloads/PRINCESS MONONOKE Official English Trailer [English (auto-generated)] [DownloadYoutubeSubtitles.com].srt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/lessons",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lasted Lesson Per Type",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
