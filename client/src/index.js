@@ -1,25 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import App from './App';
 import { AuthProvider } from './context/AuthContext'; 
 import { HighlightProvider } from './context/HighlightContext';
 import { ThemeProvider } from './context/ThemeContext';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-// Global CSS Reset
-import './index.css';
+import store from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <AuthProvider>
-      <ThemeProvider>
-        <HighlightProvider>
-          <App />
-        </HighlightProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  </BrowserRouter>
+  <Provider store={store}>
+    <BrowserRouter>
+      <AuthProvider>
+        <ThemeProvider>
+          <HighlightProvider>
+            <App />
+          </HighlightProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </Provider>
 );
