@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumberString, IsString, Length, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, MinLength, Matches } from "class-validator";
 
 /**
  * @swagger
@@ -29,7 +29,7 @@ import { IsEmail, IsNotEmpty, IsNumberString, IsString, Length, MinLength } from
  *         otp:
  *           type: string
  *           example: "123456"
- *           description: Mã OTP xác thực (6 chữ số)
+ *           description: Mã OTP gồm 6 chữ số được gửi tới email để xác thực đăng ký
  */
 export class RegisterDto {
   @IsString({ message: "Tên phải là chuỗi ký tự" })
@@ -45,7 +45,8 @@ export class RegisterDto {
   @MinLength(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" })
   password!: string;
 
-  @IsNumberString({ no_symbols: true }, { message: "OTP phải là 6 chữ số" })
-  @Length(6, 6, { message: "OTP phải gồm 6 chữ số" })
+  @IsString({ message: "OTP phải là chuỗi ký tự" })
+  @IsNotEmpty({ message: "OTP không được để trống" })
+  @Matches(/^\d{6}$/, { message: "OTP phải gồm 6 chữ số" })
   otp!: string;
 }

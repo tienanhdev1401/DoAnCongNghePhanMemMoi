@@ -1,6 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import USER_ROLE from "../enums/userRole.enum";
 import AUTH_PROVIDER from "../enums/authProvider.enum";
+
+import { RoadmapEnrollment } from "./roadmapEnrollment";
+import { UserProgress } from "./userProgress";
+import { UserConfirm } from "./userconfirm";
+import { AiScenario } from "./aiScenario";
+import { AiConversation } from "./aiConversation";
+import { SupportConversation } from "./supportConversation";
+import { SupportMessage } from "./supportMessage";
+import { RoadmapReview } from "./roadmapReview";
 import USER_GENDER from "../enums/userGender.enum";
 import USER_STATUS from "../enums/userStatus.enum";
 
@@ -37,7 +46,7 @@ export class User {
   @Column({
     type: "enum",
     enum: USER_STATUS,
-    default: USER_STATUS.UNVERIFIED,
+    default: USER_STATUS.ACTIVE,
   })
   status!: USER_STATUS;
 
@@ -63,6 +72,37 @@ export class User {
       );
     }
   };
+
+  // Một người có thể tham gia nhiều roadmap
+  @OneToMany(() => RoadmapEnrollment, (enroll) => enroll.user)
+  enrollments!: RoadmapEnrollment[];
+
+  // Một người có thể có nhiều tiến độ hoạt động
+  @OneToMany(() => UserProgress, (progress) => progress.user)
+  progresses!: UserProgress[];
+
+  @OneToOne(() => UserConfirm, (confirm) => confirm.user)
+  confirm!: UserConfirm;
+
+  @OneToMany(() => AiScenario, (scenario) => scenario.createdBy)
+  customScenarios!: AiScenario[];
+
+  @OneToMany(() => AiConversation, (conversation) => conversation.user)
+  aiConversations!: AiConversation[];
+
+  @OneToMany(() => SupportConversation, (conversation) => conversation.customer)
+  supportConversations!: SupportConversation[];
+
+  @OneToMany(() => SupportConversation, (conversation) => conversation.assignee)
+  assignedSupportConversations!: SupportConversation[];
+
+  @OneToMany(() => SupportMessage, (message) => message.sender)
+  supportMessages!: SupportMessage[];
+
+  @OneToMany(() => RoadmapReview, (review) => review.user)
+  roadmapReviews!: RoadmapReview[];
+
+
   @CreateDateColumn()
   startedAt!: Date;
   

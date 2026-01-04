@@ -1,21 +1,13 @@
 import { HttpStatusCode } from 'axios'
 import UserService from '../services/user.service'
-import nodemailer from 'nodemailer'
+import transporter from '../utils/mailTransporter'
 import ApiError from '../utils/ApiError';
 import { CreateUserDto } from '../dto/request/CreateUserDTO'
-//import { UpdateUserDto } from '../dto/request/UpdateUserDTO';
+import { UpdateUserDto } from '../dto/request/UpdateUserDTO';
 import { Request, Response, NextFunction } from "express";
 import { plainToInstance } from "class-transformer";
 
 const otpStore = new Map<string, { otp: string; expires: Date; userData: { email: string } }>();
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
 
 class UserController {
   // Lấy danh sách tất cả người dùng
@@ -51,21 +43,21 @@ class UserController {
   }
 
   // Cập nhật người dùng
-  // static async updateUser(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const id = Number(req.params.id);
-  //     const updateUserDto = plainToInstance(UpdateUserDto, req.body);
+  static async updateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = Number(req.params.id);
+      const updateUserDto = plainToInstance(UpdateUserDto, req.body);
 
-  //     const updatedUser = await UserService.updateUser(id, updateUserDto);
-  //     if (!updatedUser) {
-  //       throw new ApiError(HttpStatusCode.NotFound, "Không tìm thấy người dùng để cập nhật");
-  //     }
+      const updatedUser = await UserService.updateUser(id, updateUserDto);
+      if (!updatedUser) {
+        throw new ApiError(HttpStatusCode.NotFound, "Không tìm thấy người dùng để cập nhật");
+      }
 
-  //     res.status(HttpStatusCode.Ok).json(updatedUser);
-  //   } catch (error: any) {
-  //     res.status(HttpStatusCode.InternalServerError).json({ message: "Lỗi khi cập nhật người dùng", error: error.message });
-  //   }
-  // }
+      res.status(HttpStatusCode.Ok).json(updatedUser);
+    } catch (error: any) {
+      res.status(HttpStatusCode.InternalServerError).json({ message: "Lỗi khi cập nhật người dùng", error: error.message });
+    }
+  }
 
   // Xoá người dùng
   static async deleteUser(req: Request, res: Response, next: NextFunction) {
@@ -105,7 +97,7 @@ class UserController {
   
       // Send email
       await transporter.sendMail({
-        from: process.env.EMAIL,
+        from: process.env.EMAIL_FROM,
         to: email,
         subject: 'Mã xác thực tạo tài khoản',
         text: `Mã xác thực của bạn là: ${otp}`
