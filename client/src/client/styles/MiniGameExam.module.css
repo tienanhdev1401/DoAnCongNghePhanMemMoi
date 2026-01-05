@@ -1,0 +1,168 @@
+.examContainer {
+  background: var(--exam-surface);
+  border: 1px solid var(--exam-border);
+  border-radius: 28px;
+  padding: clamp(20px, 3.5vw, 36px);
+  color: var(--exam-text);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.examHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.questionList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.examTitle {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+}
+
+.examSubtitle {
+  margin: 0;
+  color: var(--exam-muted);
+  font-size: 14px;
+}
+
+.questionCard {
+  background: var(--exam-card-bg);
+  border: 1px solid var(--exam-card-border);
+  border-radius: 22px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.questionTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.optionList {
+  display: grid;
+  gap: 12px;
+}
+
+.optionButton {
+  border: 1px solid var(--exam-option-border);
+  border-radius: 16px;
+  background: var(--exam-option-bg);
+  color: inherit;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: border 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.optionButton:hover:not(.optionDisabled) {
+  border-color: var(--exam-option-hover-border);
+  transform: translateY(-1px);
+}
+
+.optionSelected {
+  border-color: var(--exam-option-selected-border);
+  background: var(--exam-option-selected-bg);
+}
+
+.optionCorrect {
+  border-color: var(--exam-option-correct-border);
+  background: var(--exam-option-correct-bg);
+}
+
+.optionWrong {
+  border-color: var(--exam-option-wrong-border);
+  background: var(--exam-option-wrong-bg);
+}
+
+.optionDisabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.examFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.primaryBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 26px;
+  font-weight: 700;
+  font-size: 14px;
+  background: var(--exam-primary-bg);
+  color: var(--exam-primary-text);
+  cursor: pointer;
+  box-shadow: var(--exam-primary-shadow);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondaryBtn {
+  border: 1px solid var(--exam-secondary-border);
+  border-radius: 999px;
+  padding: 12px 26px;
+  font-weight: 600;
+  font-size: 14px;
+  background: transparent;
+  color: var(--exam-secondary-text);
+  cursor: pointer;
+}
+
+.scoreBadge {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--exam-score-pass);
+}
+
+.scoreBadgeFail {
+  color: var(--exam-score-fail);
+}
+
+.successBanner {
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: var(--exam-success-bg);
+  border: 1px solid var(--exam-success-border);
+  color: var(--exam-success-text);
+  font-weight: 600;
+}
+
+.failBanner {
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: var(--exam-fail-bg);
+  border: 1px solid var(--exam-fail-border);
+  color: var(--exam-fail-text);
+  font-weight: 600;
+}
+
+.nextWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
